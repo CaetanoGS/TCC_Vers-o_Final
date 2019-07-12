@@ -1,7 +1,10 @@
 /*
- * Autor: Gustavo Caetano de Souza
- * Universidade Federal de Mato Grosso
- * Trabalho de Conclusão de Curso
+  Autor: Gustavo Caetano de Souza
+  Universidade Federal de Mato Grosso
+  Trabalho de Conclusão de Curso
+  
+  Obs: Para trocar de estratégia de controle, isto é, de PID 2DOF para PID clássico basta setar b e c como 1 
+ 
  */
 
 
@@ -10,7 +13,7 @@ public:
 
   // Definição das variáveis utilizadas no processo
   
-  double error, errorP, sample, lastSample, kP, kI, kD, P, I, D, b,c, pid, setPoint, aW, aux = 0;
+  double error, errorP, sample, lastSample, kP, kI, kD, P, I, D, b,c, pid, setPoint, aux = 0;
   long lastProcess;
 
   // Método Construtor da classe
@@ -72,15 +75,15 @@ public:
     
       if(error < 0.2 && error > -0.2){
         if((255 - aux)>255)
-          I = 0;
+          I = I/1.3;
         else if((255-aux)<0)
-          I = 255;
+          I = I/1.3;
       }else
         I=I;
     
     // PID
     
-      pid = P + I + D;
+      pid = 60 + P + I + D;
 
       aux = pid;
 
@@ -107,14 +110,14 @@ double temperatura, input, output, output1, sum, setPoint = 30;
 float val[N];                                                                     
 
 mPID MyPID(-38, -3, -0.1, 1, 1);                                            // Chamada do construtor para o cooler
-mPID MyPID1(38, 20, 0.1, 1, 1);                                             // Chamada do construtor para a lâmpada
+//mPID MyPID1(38, 20 -3, 0.1, 1, 1);                                             // Chamada do construtor para a lâmpada
 
 void setup() {
   
   Serial.begin(9600);
   pinMode(LM35,INPUT);
   MyPID.setSetPoint(setPoint);                                              // Definição de setpoint para o cooler
-  MyPID1.setSetPoint(setPoint);                                             // Definição de setpoint para a lâmpada
+  //MyPID1.setSetPoint(setPoint);                                             // Definição de setpoint para a lâmpada
 
 }
 
@@ -148,32 +151,40 @@ void loop() {
   if (millis() > 350000 && millis() < (350000*2)){
     setPoint = 31;
     MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
+    //MyPID1.setSetPoint(setPoint);
   
   }else if(millis() >= (350000*2) && millis() < (350000*3)){
-    setPoint = 29.5;
+    setPoint = 29.8;
     MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
-  
-  }else if(millis() >= (350000*3) && millis() < (350000*4)){
-    setPoint = 31.5;
-    MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
+    //MyPID1.setSetPoint(setPoint);
     
   }else if(millis() >= (350000*4)){
     setPoint = 30.5;
     MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
+    //MyPID1.setSetPoint(setPoint);
   }
 
   // Adicionando a amostra de temperatura filtrada para calculos
   
   MyPID.addNewSample(temperatura);
-  MyPID1.addNewSample(temperatura);
+  //MyPID1.addNewSample(temperatura);
 
   // Realizando cálculos
   output = MyPID.process();
-  output1 = MyPID1.process();
+  //output1 = MyPID1.process();
+
+  // Aplicação de perturbação
+
+
+  
+  if((millis() >= (350000*0.6)) && (millis() <= (350000*0.67)))
+    output1 = 128;
+  else if(millis() >= (350000*1.6) && (millis() <= (350000*1.65)))
+    output1 = 160;
+  else if (millis() >= (350000*4.4) && (millis() <= (350000*4.8)))
+    output1 = 100;
+  else
+    output1 = 255;
 
   // Escrevendo cálculos para controlar os atuadores
   
