@@ -13,18 +13,18 @@ using namespace BLA;
 
 // Criando as Matrizes necessárias para o cálculo
 
-BLA::Matrix<1,1> kE = {4.6249};
-BLA::Matrix<1,1> kI = {-5.0505};
-BLA::Matrix<1,1> Int;
-BLA::Matrix<1,1> x;
-BLA::Matrix<1,1> u;
-BLA::Matrix<1,1> ajuste = {60};
+BLA::Matrix<1,1> kE = {4.6249};                                           // Matriz de ganho estático
+BLA::Matrix<1,1> kI = {-5.0505};                                          // Matriz de ganho dos integradores
+BLA::Matrix<1,1> Int;                                                     // Matriz contendo a integral do(s) erro(s)
+BLA::Matrix<1,1> x;                                                       // Matriz de estados
+BLA::Matrix<1,1> u;                                                       // Sinal de Controle
+BLA::Matrix<1,1> ajuste = {60};                                           // Sinal de controle inicia a partir de 60 para quebrar a inércia do cooler, alterar de acordo com o projeto
 
 
-#define N 100  
+#define N 100                                                             // Janela do filtro        
 
-const int LM35 = A0;   
-double error, setPoint, aux, Ts, temperatura,sum, output1;
+const int LM35 = A0;                                                      // Port de leitura do sensor de temperatura
+double error, setPoint, aux, Ts, temperatura,sum, output1;                
 long dT, lastProcess = 0;
 float val[N];
 
@@ -32,8 +32,8 @@ float val[N];
 void setup(){
 
   Serial.begin(9600);
-  setPoint = 30;
-  Ts = 25;
+  setPoint = 30;                                                          // Setpoint inicial
+  Ts = 25;                                                                // Tempo de amostragem
   
 }
 
@@ -76,7 +76,7 @@ void loop (){
 
     x = {temperatura};
 
-    u = ajuste - kE*x - kI*Int;
+    u = ajuste - kE*x - kI*Int;                                       
 
     // Windup
 
@@ -88,12 +88,16 @@ void loop (){
       }else
         Int = Int;
 
+    // Delimitando o limite de atuação de acordo com o PWM
+
     if (u(0) > 255)
       u = {255};
     else if (u(0) < 0)
       u = {0};
     else 
       u = u;
+
+   // Aplicando perturbações no sistema SISO
 
     if((millis() >= (350000*0.6)) && (millis() <= (350000*0.67)))
       output1 = 128;
