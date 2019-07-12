@@ -1,4 +1,5 @@
-/* Autor: Gustavo Caetano de Souza
+/* 
+   Autor: Gustavo Caetano de Souza
    Universidade Federal de Mato Grosso
    Trabalho de Conclusão de Curso 2019/01
 */
