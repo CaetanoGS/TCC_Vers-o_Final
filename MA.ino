@@ -1,3 +1,9 @@
+/* Autor: Gustavo Caetano de Souza
+   Universidade Federal de Mato Grosso
+   Trabalho de Conclusão de Curso 2019/01
+*/
+
+
 #define N 100                                         // Tamanho da janela do filtro
 
 const int LM35 = A0;                                  // Entrada de Sinal do sensor de temperatura
@@ -13,6 +19,9 @@ void setup() {
 }
 
 void loop() {
+
+  // Definindo tempo de amostragem
+  
   now = millis();
   timeChange = (now - lastTime);
   int Ts = 25;
