@@ -15,8 +15,9 @@ void setup() {
 void loop() {
   now = millis();
   timeChange = (now - lastTime);
+  int Ts = 25;
 
-  if (timeChange >= 25){ 
+  if (timeChange >= Ts){ 
 
     // Iniciando Atuadores em 50%
 
