@@ -111,7 +111,7 @@ long cont = 0;
 
 mPID MyPID(-38, -3, -0.1, 1, 1);                                             // Chamada do construtor para o cooler
 //mPID MyPID(-37.9, -7.65, 0, 0.55, 0); 
-mPID MyPID1(38, 20 -3, 0.1, 1, 1);                                             // Chamada do construtor para a lâmpada
+mPID MyPID1(38, 20, 0.1, 1, 1);                                             // Chamada do construtor para a lâmpada
 
 void setup() {
   
