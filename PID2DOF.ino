@@ -1,10 +1,7 @@
 /*
-  Autor: Gustavo Caetano de Souza
-  Universidade Federal de Mato Grosso
-  Trabalho de Conclusão de Curso
-  
-  Obs: Para trocar de estratégia de controle, isto é, de PID 2DOF para PID clássico basta setar b e c como 1 
- 
+ * Autor: Gustavo Caetano de Souza
+ * Universidade Federal de Mato Grosso
+ * Trabalho de Conclusão de Curso
  */
 
 
@@ -43,12 +40,22 @@ public:
   // Efetua o cálculo do PID 2DOF com um Ts de 25 ms
   
   double process(){
+
+    // Definindo Ts = 25 ms
+
+    unsigned long lastTime;
+    unsigned long now = millis();
+    unsigned long timeChange = (now - lastTime);
+
+    if (timeChange>=25){
             
       errorP = (b*setPoint) - sample;                           // Erro para ação Proporcional
       error = setPoint - sample;                                // Erro para ação Integral
     
       float dT = (millis() - lastProcess) / 1000.0;             // Definindo o intervalo de tempo entre as amostras para o cálculo da integral e da derivada
       lastProcess = millis();
+
+      //Serial.println(dT);
     
       //Ação Proporcional
     
@@ -88,10 +95,10 @@ public:
       else
         pid = pid;    
 
-      
+      lastTime = now;
     
       return pid;
-    
+    }
   }
 };
 
@@ -100,9 +107,10 @@ public:
 const int LM35 = A0;                                                        // Port onde é coletado os dados do sensor de temperatura
 double temperatura, input, output, output1, sum, setPoint = 31;             
 float val[N];
-float Ts = 1000;                                                                   
+long cont = 0;                                                                     
 
-mPID MyPID(-38, -3, -0.1, 0.8, 0.8);                                            // Chamada do construtor para o cooler
+mPID MyPID(-38, -3, -0.1, 0.8, 0.8);                                             // Chamada do construtor para o cooler
+//mPID MyPID(-37.9, -7.65, 0, 0.55, 0); 
 //mPID MyPID1(38, 20 -3, 0.1, 1, 1);                                             // Chamada do construtor para a lâmpada
 
 void setup() {
@@ -116,14 +124,6 @@ void setup() {
 
 
 void loop() {
-
-  unsigned long lastTime;
-  unsigned long now = millis();
-  unsigned long timeChange = (now - lastTime);
-
-  Serial.println(timeChange);
-
-  if (timeChange>=Ts){
 
   // Efetua a leitura do sensor
 
@@ -149,63 +149,65 @@ void loop() {
 
   // Alterando os setpoints ao decorrer da simulação
 
-  if (millis() > 250000 && millis() < (250000*2)){
-    setPoint = 31;
+  if (millis() > 200000 && millis() < (200000*2)){
+    setPoint = 32;
     MyPID.setSetPoint(setPoint);
     //MyPID1.setSetPoint(setPoint);
   
-  }else if(millis() >= (250000*2) && millis() < (250000*3)){
-    setPoint = 29.8;
+  }
+  /*else if(millis() >= (400000*2) && millis() < (400000*3)){
+    setPoint = 29.5;
     MyPID.setSetPoint(setPoint);
     //MyPID1.setSetPoint(setPoint);
     
-  }else if(millis() >= (250000*4)){
+  }else if(millis() >= (400000*4)){
     setPoint = 30.5;
     MyPID.setSetPoint(setPoint);
     //MyPID1.setSetPoint(setPoint);
   }
+  */
 
   // Adicionando a amostra de temperatura filtrada para calculos
+  
+  MyPID.addNewSample(temperatura);
+  //MyPID1.addNewSample(temperatura);
+
+  // Realizando cálculos
+  
+  output = MyPID.process();
+  //output1 = MyPID1.process();
+  
+
+  // Aplicação de perturbação
 
 
-    MyPID.addNewSample(temperatura);
-    //MyPID1.addNewSample(temperatura);
   
-    // Realizando cálculos
-    output = MyPID.process();
-    //output1 = MyPID1.process();
+  if((millis() >= (200000*0.6)) && (millis() <= (200000*0.61)))
+      output1 = 40;
+  /*
+  else if(millis() >= (400000*1.6) && (millis() <= (400000*1.62)))
+       output1 = 20;
+  else if (millis() >= (400000*4.6) && (millis() <= (400000*4.63)))
+      output1 = 0;
   
-    // Aplicação de perturbação
-  
-  
-    
-    if((millis() >= (250000*0.6)) && (millis() <= (250000*0.67)))
-      output1 = 128;
-    else if(millis() >= (250000*1.6) && (millis() <= (250000*1.65)))
-      output1 = 160;
-    else if (millis() >= (250000*4.4) && (millis() <= (250000*4.8)))
-      output1 = 100;
-    else
+  */
+  else
       output1 = 255;
   
-    // Escrevendo cálculos para controlar os atuadores
-    
-    analogWrite(6,output);
-    analogWrite(5,output1);
+  // Escrevendo cálculos para controlar os atuadores
+
+  analogWrite(6,output);
+  analogWrite(5,output1);
+
+  // Imprimindo Resultados no Matlab
   
-    // Imprimindo Resultados no Matlab
-    
-    double results[] = {temperatura, output, output1, setPoint};
-    Serial.print(results[0]);
-    Serial.print("\t");
-    Serial.print(results[1]);  
-    Serial.print("\t");
-    Serial.print(results[2]);  
-    Serial.print("\t");
-    Serial.println(results[3]);
+  double results[] = {temperatura, output, output1, setPoint};
+  Serial.print(results[0]);
+  Serial.print("\t");
+  Serial.print(results[1]);  
+  Serial.print("\t");
+  Serial.print(results[2]);  
+  Serial.print("\t");
+  Serial.println(results[3]);
 
-    
-  }
-
-  lastTime = now;
 }
