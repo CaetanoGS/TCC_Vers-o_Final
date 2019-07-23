@@ -34,6 +34,7 @@ double error, setPoint, aux, Ts, temperatura,sum;
 float val[N];
 long cont = 0;
 long lastProcess;
+unsigned long lastTime = 0;
 
 
 void setup(){
@@ -48,7 +49,6 @@ void loop (){
 
   // Definindo Ts = 25 ms
 
-  unsigned long lastTime;
   unsigned long now = millis();
   unsigned long timeChange = (now - lastTime);
 
@@ -121,23 +121,24 @@ void loop (){
         u_L(0) = 0;
       else 
         u_L = u_L;
-  }
+
+    }
   
 
     // Alterando os setpoints ao decorrer da simulação
-
-  if (millis() > 400000 && millis() < (400000*2)){
-    setPoint = 31;  
-  }else if(millis() >= (400000*2) && millis() < (400000*3)){
-    setPoint = 29.5;    
-  }else if(millis() >= (400000*4)){
-    setPoint = 30.5;
-  }
+  
+    if (millis() > 400000 && millis() < (400000*2)){
+      setPoint = 31;  
+    }else if(millis() >= (400000*2) && millis() < (400000*3)){
+      setPoint = 29.5;    
+    }else if(millis() >= (400000*4)){
+      setPoint = 30.5;
+    }
 
     // Escrevendo cálculos para controlar os atuadores
     int output = u(0);
     int output1 = u_L(0);
-
+    //int output1 = 255;
     // Aplicando perturbações no sistema SISO
 
     if((millis() >= (400000*0.6)) && (millis() <= (400000*0.61)))
@@ -147,7 +148,8 @@ void loop (){
     else if (millis() >= (400000*4.6) && (millis() <= (400000*4.63)))
       output1 = 100;
     else
-      output1 = u_L(0);
+      output1 = output1;
+      //output1 = u_L(0);
 
     
     
@@ -165,8 +167,8 @@ void loop (){
     Serial.print("\t");
     Serial.println(results[3]);
 
-    cont++;
-}
+    lastTime = now;
+  }
 }
 
 double getError(double setPoint, double temperatura){
