@@ -14,17 +14,18 @@ using namespace BLA;
 // Criando as Matrizes necessárias para o cálculo
 
 BLA::Matrix<1,1> kE = {-6.9720};                                           // Matriz de ganho estático
-BLA::Matrix<1,1> kI = {-3};                                          // Matriz de ganho dos integradores
+BLA::Matrix<1,1> kI = {-3};                                                // Matriz de ganho dos integradores
 BLA::Matrix<1,1> Int;                                                     // Matriz contendo a integral do(s) erro(s)
 BLA::Matrix<1,1> x;                                                       // Matriz de estados
-BLA::Matrix<1,1> u = {0};                                                       // Sinal de Controle
-BLA::Matrix<1,1> ajuste = {382.58};                                           // Sinal de controle inicia a partir de 60 para quebrar a inércia do cooler, alterar de acordo com o projeto
+BLA::Matrix<1,1> u = {0};                                                 // Sinal de Controle
+BLA::Matrix<1,1> ajuste = {382.58};                                       // Sinal de controle inicia a partir de 60 para quebrar a inércia do cooler, alterar de acordo com o projeto
 
+// Malha de controle para a Lâmpada regular a temperatura
 
-BLA::Matrix<1,1> kE_L = {6.2163};                                           // Matriz de ganho estático
+BLA::Matrix<1,1> kE_L = {6.2163};                                          // Matriz de ganho estático
 BLA::Matrix<1,1> kI_L = {5.1600};                                          // Matriz de ganho dos integradores
-BLA::Matrix<1,1> Int_L;                                                     // Matriz contendo a integral do(s) erro(s)
-BLA::Matrix<1,1> u_L = {0};                                                       // Sinal de Controle
+BLA::Matrix<1,1> Int_L;                                                    // Matriz contendo a integral do(s) erro(s)
+BLA::Matrix<1,1> u_L = {0};                                                // Sinal de Controle
 BLA::Matrix<1,1> ajuste_L = {150}; 
 
 #define N 100                                                             // Janela do filtro        
@@ -76,6 +77,7 @@ void loop (){
 
     temperatura = sum;
 
+    // Calcula o controle somente após o filtro imprimir dados reais
     
     if(cont > N){
       error = (setPoint - temperatura);
@@ -139,6 +141,7 @@ void loop (){
     int output = u(0);
     int output1 = u_L(0);
     //int output1 = 255;
+    
     // Aplicando perturbações no sistema SISO
 
     if((millis() >= (400000*0.6)) && (millis() <= (400000*0.61)))
@@ -167,6 +170,7 @@ void loop (){
     Serial.print("\t");
     Serial.println(results[3]);
 
+    cont++;
     lastTime = now;
   }
 }
