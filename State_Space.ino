@@ -167,7 +167,7 @@ void loop (){
     Serial.print(results[2]);  
     Serial.print("\t");
     Serial.println(results[3]);
-
+    cont++;
     lastTime = now;
   }
 }
