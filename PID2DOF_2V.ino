@@ -97,12 +97,14 @@ public:
 
 
 #define N 100                                                               // Tamanho da janela do filtro janela móvel
+
+unsigned long lastTime = 0;
 const int LM35 = A0;                                                        // Port onde é coletado os dados do sensor de temperatura
 double temperatura, input, output, output1, sum, setPoint = 31;             
 float val[N];
-float Ts = 1000;                                                                   
+float Ts = 25;                                                                   
 
-mPID MyPID(-38, -3, -0.1, 0.8, 0.8);                                            // Chamada do construtor para o cooler
+mPID MyPID(-38, -3, -0.1, 1, 1);                                            // Chamada do construtor para o cooler
 mPID MyPID1(38, 20 -3, 0.1, 1, 1);                                             // Chamada do construtor para a lâmpada
 
 void setup() {
@@ -117,59 +119,56 @@ void setup() {
 
 void loop() {
 
-  unsigned long lastTime;
   unsigned long now = millis();
   unsigned long timeChange = (now - lastTime);
 
-  Serial.println(timeChange);
-
   if (timeChange>=Ts){
 
-  // Efetua a leitura do sensor
-
-  temperatura = (double(analogRead(LM35))*5/(1023))/0.01;
-
-  // Filtra os dados coletados do sensor                
-
-  for(int i = N-1; i>0; i--){
-    val[i] = val[i-1];
-  }
-
-  val[0] = temperatura;
-
-  sum = 0;
-
-  for(int i = 0; i < N; i++){
-    sum += val[i];
-  }
-
-  sum = (sum/N);
-
-  temperatura = sum;
-
-  // Alterando os setpoints ao decorrer da simulação
-
-  if (millis() > 250000 && millis() < (250000*2)){
-    setPoint = 31;
-    MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
+    // Efetua a leitura do sensor
   
-  }else if(millis() >= (250000*2) && millis() < (250000*3)){
-    setPoint = 29.8;
-    MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
+    temperatura = (double(analogRead(LM35))*5/(1023))/0.01;
+  
+    // Filtra os dados coletados do sensor                
+  
+    for(int i = N-1; i>0; i--){
+      val[i] = val[i-1];
+    }
+  
+    val[0] = temperatura;
+  
+    sum = 0;
+  
+    for(int i = 0; i < N; i++){
+      sum += val[i];
+    }
+  
+    sum = (sum/N);
+  
+    temperatura = sum;
+  
+    // Alterando os setpoints ao decorrer da simulação
+  
+    if (millis() > 250000 && millis() < (250000*2)){
+      setPoint = 31;
+      MyPID.setSetPoint(setPoint);
+      MyPID1.setSetPoint(setPoint);
     
-  }else if(millis() >= (250000*4)){
-    setPoint = 30.5;
-    MyPID.setSetPoint(setPoint);
-    MyPID1.setSetPoint(setPoint);
-  }
+    }else if(millis() >= (250000*2) && millis() < (250000*3)){
+      setPoint = 29.8;
+      MyPID.setSetPoint(setPoint);
+      MyPID1.setSetPoint(setPoint);
+      
+    }else if(millis() >= (250000*4)){
+      setPoint = 30.5;
+      MyPID.setSetPoint(setPoint);
+      MyPID1.setSetPoint(setPoint);
+    }
 
-  // Adicionando a amostra de temperatura filtrada para calculos
+    // Adicionando a amostra de temperatura filtrada para calculos
 
 
     MyPID.addNewSample(temperatura);
-    MyPID1.addNewSample(temperatura);
+    //MyPID1.addNewSample(temperatura);
   
     // Realizando cálculos
     output = MyPID.process();
@@ -186,7 +185,7 @@ void loop() {
     else if (millis() >= (250000*4.4) && (millis() <= (250000*4.8)))
       output1 = 100;
     else
-      output1 = 255;
+      output1 = output1;
   
     // Escrevendo cálculos para controlar os atuadores
     
@@ -204,8 +203,6 @@ void loop() {
     Serial.print("\t");
     Serial.println(results[3]);
 
-    
+    lastTime = now;
   }
-
-  lastTime = now;
 }
