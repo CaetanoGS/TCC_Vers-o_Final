@@ -20,14 +20,6 @@ BLA::Matrix<1,1> x;                                                       // Mat
 BLA::Matrix<1,1> u = {0};                                                       // Sinal de Controle
 BLA::Matrix<1,1> ajuste = {382.58};                                           // Sinal de controle inicia a partir de 60 para quebrar a inércia do cooler, alterar de acordo com o projeto
 
-/*
-BLA::Matrix<1,1> kE_L = {6.2163};                                           // Matriz de ganho estático
-BLA::Matrix<1,1> kI_L = {5.1600};                                          // Matriz de ganho dos integradores
-BLA::Matrix<1,1> Int_L;                                                     // Matriz contendo a integral do(s) erro(s)
-BLA::Matrix<1,1> u_L = {0};                                                       // Sinal de Controle
-BLA::Matrix<1,1> ajuste_L = {150}; 
-*/
-
 #define N 100                                                             // Janela do filtro        
 
 const int LM35 = A0;                                                      // Port de leitura do sensor de temperatura
@@ -86,7 +78,6 @@ void loop (){
       Int_L += error*dT;
       x = {temperatura};
       u = kE*x + kI*Int + ajuste;
-      u_L = kE_L*x + kI_L*Int_L + ajuste_L;
                                     
 
       // Windup
@@ -99,14 +90,6 @@ void loop (){
         }else
           Int = Int;
 
-      if(error < 0.2 && error > -0.2){
-        if((255 - u_L(0))>255)
-          Int_L = Int_L/1.2;
-        else if((255 - u_L(0))<0)
-          Int_L = Int_L/1.2;
-        }else
-          Int_L = Int_L;
-
       // Delimitando o limite de atuação de acordo com o PWM
 
       if (u(0) > 255)
@@ -115,13 +98,6 @@ void loop (){
         u(0) = 0;
       else 
         u = u;
-
-     if(u_L(0) > 255)
-      u_L(0) = 255;
-     else if (u_L(0) < 0)
-        u_L(0) = 0;
-      else 
-        u_L = u_L;
 
     }
   
