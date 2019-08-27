@@ -1,0 +1,135 @@
+class SS{
+public:
+  
+  double error, sample, lastSample, K, kI, I, x, U, setPoint;
+  long lastProcess;
+  
+  // Método construtor
+
+  SS(double _K, double _kI){
+    K = _K;
+    kI = _kI;
+  }
+
+  // Adicionar uma nova amostra
+  
+  void addNewSample(double _sample){
+    sample = _sample;
+  }
+  
+  // Adicionar Setpoint
+
+  void setSetPoint(double _setPoint){
+    setPoint = _setPoint;
+  }
+  
+  //Calculo do controle que é dado por u(t) = Ki*integral(Erro) + K*x(t)
+
+  double process(){
+    
+    error = -setPoint + sample; // Coloca-se sinal invertido por conta da característica do sistema
+
+    // Diferença de tempo entre as amostras
+    
+    float dT = (millis() - lastProcess) / 1000.0;
+    lastProcess = millis();
+    
+    // Ação integral
+
+    if(error == 0)
+       I = 0;
+    else
+       I += (error * dT);
+     
+    
+    // Ação Derivativa para encontrar os estados x(t)
+    
+    x = (sample - lastSample)/ dT;
+    lastSample = sample;
+    
+    
+    // Ação de Controle
+
+    U = Ki*I + K*x;
+
+
+    // Controle do intervalo de atuação  de acordo com as limitações do PWM
+
+    if (U > 255)
+      U = 255;
+    else if (U < 0)
+      U = 0;
+    else
+      U = U;
+      
+    
+    return U;
+  }
+};
+
+
+// Mapeamento de constantes
+
+#define N 50
+#define K 20.01   
+#define Ki 17.38
+
+const int LM35 = A0;
+double temperatura, input, output, sum, setPoint = 30;
+float val[N];
+
+SS MySS(K, Ki);
+
+void setup() {
+  
+  Serial.begin(9600); 
+  pinMode(LM35,INPUT);
+  MySS.setSetPoint(setPoint);
+
+}
+
+void loop() {
+
+temperatura = (double(analogRead(LM35))*5/(1023))/0.01; //Leitura da temperatura baseando-se nos calculos do datasheet
+
+
+// Filtro janela móvel
+
+
+for(int i = N-1; i>0; i--){
+  val[i] = val[i-1];
+}
+
+val[0] = temperatura;
+
+sum = 0;
+
+for(int i = 0; i < N; i++){
+  sum += val[i];
+}
+
+sum = (sum/N);
+
+temperatura = sum;
+
+// Inicio do controle
+
+MySS.addNewSample(temperatura);
+output = MySS.process();
+
+// Controle do atuador
+
+analogWrite(6,output);
+
+// Construção de vetores para exportação para o Matlab via serial
+
+double results[] = {temperatura, output};
+
+Serial.print(results[0]);
+Serial.print("\t");
+Serial.println(results[1]);  
+
+delay(1);
+
+
+}

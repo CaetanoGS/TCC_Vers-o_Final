@@ -1,0 +1,32 @@
+\section{Seguimento de referência com Integradores com dois atuadores}
+
+Em um segundo momento, optou-se por controlar a temperatura utilizando os dois atuadores, desta forma, assim como nos experimentos anteriores com esta quantidade de atuadores, foi possível expandir os limites de atuação do sistema, porém, estes limites podem variar de acordo com a temperatura média do ambiente onde os ensaios serão realizados. Abaixo, na Figura \ref{SS2V}, pode-se visualizar o experimento:
+
+
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale= 0.7]{Figuras/SS_2V_2_TENTATIVA.jpg}
+\caption{Controle com seguimento de referência com integradores com dois atuadores}
+\label{SS2V}
+\end{figure}
+\vspace{15pt}
+
+Para este experimento adiciounou-se assim como no $PID$ $2DOF$, duas malhas de controle, sendo assim o sistema possui uma unica entrada de setpoint para um estado (temperatura) a ser controlado.
+
+Na Figura \ref{SS2V}, nota-se algumas oscilações, assim como nas Figuras \ref{SS1V}, todavia, as mesmas observações relatadas na seção anterior, aplicam-se neste caso.
+
+\newpage
+
+
+\section{Comparativo entre as estratégias de controle com dois atuadores}
+
+Afim de comparar as duas estratégias propostas neste trabalho, juntou-se os dados coletados nos experimentos com dois atuadores, onde estes foram plotados um sobre o outro resultando na Figura \ref{SSxPID2DOF}. Nesta figura, é possível identificar que ambos possuem tempos de $5\%$ semelhantes, exceto no último degrau, todavia não houve oscilações como pode ser visto na outra estratégia. Observa-se também que para atuar em degraus que exigem o aumento da temperatura, o PID 2DOF consegue atuar com menos overshoots, entretanto, para degraus onde exigem a redução da temperatura e rejeição de perturbações, observa-se comportamentos semelhantes.
+
+\begin{figure}[!htb]
+\centering
+\includegraphics[scale= 1]{Figuras/SSxPIDx2Ved.jpg}
+\caption{Comparativo entre SS e PID 2DOF}
+\label{SSxPID2DOF}
+\end{figure}
+
