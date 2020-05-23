@@ -19,7 +19,7 @@ control of the selected process due to the limitations of this hardware, given t
 high sampling rate for better controller performance.
 
 
-## Problemática?
+## Problemática
 
 Ao longo dos últimos anos, viu-se uma popularização dos microcontroladores e do
 open hardware, sendo estes eventos, interligados com a queda dos custos dos componentes
