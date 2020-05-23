@@ -1,87 +1,91 @@
-# Stocks Prediction
+# Implementation of Advanced Control Algorithms in Low-Cost Hardware's
 
-![Home Page](https://user-images.githubusercontent.com/50907344/80729241-3f868080-8b08-11ea-9ca7-f3b3a3026d01.png)
-![Time Series Chart](https://user-images.githubusercontent.com/50907344/80728741-9049a980-8b07-11ea-989d-68c15203ae87.png)
-![Candle and OHLC charts](https://user-images.githubusercontent.com/50907344/80729254-43b29e00-8b08-11ea-941d-a9de18e6db00.png)
+![Tests Plant](https://user-images.githubusercontent.com/50907344/82740138-40e14c80-9d46-11ea-9264-ecbba1e61b12.png)
 
-
+![PID x PID2DOF](https://user-images.githubusercontent.com/50907344/82740180-a5041080-9d46-11ea-8da4-dd8aabc8b118.png)
 
 
-## About this Project
 
-The idea of the Web App is:
+## Abstract
 
-_"Share knowledge in the form of stocks predictions, providing a simple way to learn"._
-
-
-## Why?
-
-This project is part of my personal portfolio, so, I'll be happy if you could provide me any feedback about the project, code, structure or anything that you can report that could make me a better developer!
-
-Email-me: CaetanooG@hotmail.com
-
-Connect with me at [LinkedIn](https://www.linkedin.com/in/gustavo-caetano-de-souza-00ab0a128/).
+The dissertation presented in this paper aims at the development and comparison of
+classical control algorithms using low cost hardware in a prototype didactic temperature
+process. For process monitoring and action on state variables, We opted for affordable
+sensors, providing a didactic plant with little financial resources. The classic control
+algorithms were developed based on models already established in the literature regarding
+the PID 2DOF controller and state feedback with reference tracking with integrators.
+These strategies were implemented in Arduino, where positive results were achieved in the
+control of the selected process due to the limitations of this hardware, given the need for a
+high sampling rate for better controller performance.
 
 
-## Observation about this App
+## Problemática?
 
-1 - The web app is in development
+Ao longo dos últimos anos, viu-se uma popularização dos microcontroladores e do
+open hardware, sendo estes eventos, interligados com a queda dos custos dos componentes
+eletrônicos, possibilitando a construção de pequenas plataformas com cotações mais
+acessíveis. No entanto, com estes fenômenos, notou-se uma grande ocupação dos microcontroladores
+no ramo tecnológico, onde estão cada vez mais presentes no cotidiano das
+pessoas, agregando a este, conforto e facilidades. Todavia, os dispositivos têm representado
+grandes impactos nos sistemas produtivos e no que tange inovações tecnológicas.
 
+A automação tornou-se cada vez maior com o fenômeno da indústria 4.0, onde há
+interconexões entre todos os equipamentos, permitindo o crescente aumento da qualidade
+e produtividade, entretanto, surge paralelamente, maiores exigências dentro do processo
+para manter um padrão, fazendo-se necessário o uso de controladores para cumprir com
+tal.
 
-## Installers
+Tendo em vista a necessidade de reduzir custos para estes processos, faz-se necessário
+um estudo que possibilite avaliar a viabilidade destes algoritmos quando implementados
+em hardwares de baixo custo, verificando a capacidade de controle destes e a dificuldade
+de implementação além do desempenho do hardware frente a estas técnicas de controle.
+
+## Software's necessários
 
 If you want to test the Web App, the installers are listed below:
 
-[Python 3.8.x](https://www.python.org/downloads/)
-
-
-## Functionalities
-
-- Get the stock price of the next work day and also the error of the prediction
-
-- Get the stock information
-  - Last open and close values in the period searched
-  - Last high and low values in the period searched
-
-- See the hystorical graphics of the selected stock
-  - Time series chart
-  - Candlestick chart
-  - OHLC chart
+[Arduino IDE](https://www.arduino.cc/en/main/software)
+[MATLAB 2019/1](https://www.mathworks.com/products/new_products/release2019a.html)
 
 
 
-## Getting Started
+## Objetivo
 
-### Prerequisites
+Implementar diferentes algoritmos de controle em hardware de baixo custo, avaliando
+sua viabilidade e dificuldade de implementação em bancada didática.
 
-To run this project in the development mode, you'll need to have a basic environment to run a Python, that can be found [here](https://code.visualstudio.com/download).
+### Objetívos Específicos
 
-### Installing
+- Estudar os algoritmos de controle PID 2DOF e seguimento de referência por integradores
+além de suas características;
 
-**Cloning the Repository**
+- Avaliar os diferentes hardwares de baixo custo disponíveis: Arduino, Raspberry e
+PIC.
 
-```
-$ git clone https://github.com/CaetanoGS/stocksForecast.git
+- Selecionar o hardware específico e fazer conexão com a planta didática;
 
-$ cd stocksForecast/app
-```
+- Realizar o projeto dos controladores;
 
-**Installing dependencies**
+- Implementar os algoritmos de controle;
 
-```
-$ pip3 install -U yfinance flask stocker numpy
-```
+- Comparar as características básicas;
 
-
-### Running
-
-With all dependencies installed and the environment properly configured, you can now run the app:
+- Analisar a viabilidade de cada técnica.
 
 
-```
-$ python3 app.py
-```
+## Resultados
 
+![Tests Plant](https://user-images.githubusercontent.com/50907344/82740138-40e14c80-9d46-11ea-9264-ecbba1e61b12.png)
+
+![Transfer Function](https://user-images.githubusercontent.com/50907344/82740154-640bfc00-9d46-11ea-9c98-d41fb4137ead.png)
+
+![PID 2DOF](https://user-images.githubusercontent.com/50907344/82740169-9289d700-9d46-11ea-95ed-05c5f6206752.png)
+
+![PID](https://user-images.githubusercontent.com/50907344/82740175-9d446c00-9d46-11ea-8ee4-1153f23a28b2.png)
+
+![PID x PID2DOF](https://user-images.githubusercontent.com/50907344/82740180-a5041080-9d46-11ea-8da4-dd8aabc8b118.png)
+
+![Seguidor de Ref com Integradores](https://user-images.githubusercontent.com/50907344/82740184-b0efd280-9d46-11ea-94f5-b0066f61d25b.png)
 
 ## Contributing
 
